@@ -1,6 +1,6 @@
 # Envio de Alertas de metas Organizze para Telegram
 
-Consulta API do Organizze e envia para Grupo no Telegram
+Consulta API do [Organizze](https://github.com/organizze) e envia para Grupo no Telegram
 
 ### Configurando Telegram
 
