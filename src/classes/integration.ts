@@ -6,10 +6,10 @@ import {NoDeltaBatchIntegrationFlow} from "@tunnelhub/sdk/src/classes/flows/noDe
 import Organizze from "./organizze";
 
 export default class Integration extends NoDeltaBatchIntegrationFlow {
-    private readonly parameters: { custom: GenericParameter[] };
-    private readonly systems: TunnelHubSystem[];
     private readonly TELEGRAM_TOKEN: string;
     private readonly TELEGRAM_CHAT_ID: string;
+    private readonly parameters: { custom: GenericParameter[] };
+    private readonly systems: TunnelHubSystem[];
     private readonly organizze: Organizze;
 
     constructor(event: any, context: any) {
@@ -60,9 +60,9 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
 
     async loadSourceSystemData(payload?: any): Promise<IntegrationModel[]> {
         const categories = await this.organizze.getCategories();
-        const metas = await this.organizze.getBudgets();
+        const budgets = await this.organizze.getBudgets();
 
-        metas.sort((a, b) => {
+        budgets.sort((a, b) => {
             const categoryA = categories.find(value => value.id === a.category_id);
             const categoryB = categories.find(value => value.id === b.category_id);
             if (categoryA!.name > categoryB!.name) return 1;
@@ -70,9 +70,8 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
             return 0;
         })
 
-        return metas.map(meta => {
+        return budgets.map(meta => {
             const category = categories.find(value => value.id === meta.category_id);
-
             return {
                 nomeMeta: category.name,
                 planejado: meta.amount_in_cents,
@@ -84,11 +83,10 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
 
     async sendDataInBatch(metas: IntegrationModel[]): Promise<IntegrationMessageReturnBatch[]> {
         const client = createClient({token: this.TELEGRAM_TOKEN})
-        let currencyFormater = new Intl.NumberFormat('pt-BR', {
+        let currencyFormatter = new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
         });
-
         const percentageFormatter = new Intl.NumberFormat('pt-BR', {
             style: 'percent',
             minimumFractionDigits: 0,
@@ -98,24 +96,31 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
         let message = '';
         for (let i = 0; i < metas.length; i++) {
             const meta = metas[i];
-
-            message += `<b>${meta.nomeMeta}</b> - ${percentageFormatter.format(meta.porcentagem / 100)}
- ├ Meta: ${currencyFormater.format(meta.planejado / 100)}
- ├ Gasto: ${currencyFormater.format(meta.gasto / 100)}\n`;
+            message +=
+                `<b>${meta.nomeMeta}</b> - ${percentageFormatter.format(meta.porcentagem / 100)} \n` +
+                ` ├ Meta: ${currencyFormatter.format(meta.planejado / 100)} \n` +
+                ` ├ Gasto: ${currencyFormatter.format(meta.gasto / 100)}\n`;
         }
 
-        const sent = await client.sendMessage({
-            chat_id: this.TELEGRAM_CHAT_ID,
-            text: message,
-            // @ts-ignore
-            parse_mode: 'HTML'
-        });
-
-        return metas.map(() => ({
-            status: 'SUCCESS',
-            data: {},
-            message: 'Meta enviada',
-        }));
+        try {
+            await client.sendMessage({
+                chat_id: this.TELEGRAM_CHAT_ID,
+                text: message,
+                // @ts-ignore
+                parse_mode: 'HTML'
+            });
+            return metas.map(() => ({
+                status: 'SUCCESS',
+                data: {},
+                message: 'Meta enviada',
+            }));
+        } catch (e) {
+            return metas.map(() => ({
+                status: 'FAIL',
+                data: {},
+                message: e.message,
+            }));
+        }
     }
 
     private getIntegrationRequiredParameter(paramName: string): string {
