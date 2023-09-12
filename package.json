@@ -36,7 +36,7 @@
   "dependencies": {
     "@botocrat/telegram": "^0.2.8",
     "@tunnelhub/sdk": "^1.0.115",
-    "got": "11",
+    "axios": "^1.5.0",
     "luxon": "^3.4.3"
   }
 }

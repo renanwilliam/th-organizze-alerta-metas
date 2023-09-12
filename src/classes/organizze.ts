@@ -1,4 +1,4 @@
-import got from "got";
+import axios from 'axios';
 import {Categorias, Metas} from "../data";
 
 export default class Organizze {
@@ -6,16 +6,20 @@ export default class Organizze {
     }
 
     async getCategories() {
-        return got.get(`${this.host}/categories`, {
-            username: this.userName,
-            password: this.password
-        }).json<Categorias[]>();
+        return axios.get<Categorias[]>(`${this.host}/categories`, {
+            auth: {
+                username: this.userName,
+                password: this.password
+            }
+        }).then(result => result.data);
     }
 
     async getBudgets() {
-        return got.get(`${this.host}/budgets`, {
-            username: this.userName,
-            password: this.password
-        }).json<Metas[]>();
+        return axios.get<Metas[]>(`${this.host}/budgets`, {
+            auth: {
+                username: this.userName,
+                password: this.password
+            }
+        }).then(result => result.data);
     }
 }
