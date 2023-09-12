@@ -4,6 +4,7 @@ import {IntegrationModel} from '../data';
 import createClient from '@botocrat/telegram'
 import {NoDeltaBatchIntegrationFlow} from "@tunnelhub/sdk/src/classes/flows/noDeltaBatchIntegrationFlow";
 import Organizze from "./organizze";
+import {DateTime} from "luxon";
 
 export default class Integration extends NoDeltaBatchIntegrationFlow {
     private readonly TELEGRAM_TOKEN: string;
@@ -93,13 +94,21 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
             maximumFractionDigits: 0
         })
 
+        const daysUntilEndOfMonth = DateTime.now().startOf('day').endOf('month').diff(DateTime.now(), 'days');
+        const weeksUntilEndOfMonth = DateTime.now().startOf('day').endOf('month').diff(DateTime.now(), 'weeks');
+
         let message = '';
         for (let i = 0; i < metas.length; i++) {
             const meta = metas[i];
             message +=
                 `<b>${meta.nomeMeta}</b> - ${percentageFormatter.format(meta.porcentagem / 100)} \n` +
                 ` ├ Meta: ${currencyFormatter.format(meta.planejado / 100)} \n` +
-                ` ├ Gasto: ${currencyFormatter.format(meta.gasto / 100)}\n`;
+                ` ├ Gasto: ${currencyFormatter.format(meta.gasto / 100)}\n` +
+                ` ├ Disponível: \n` +
+                ` ├─ Total: ${currencyFormatter.format((meta.planejado - meta.gasto) / 100)} \n` +
+                ` ├─ Por semana: ${currencyFormatter.format((meta.planejado - meta.gasto) / (Math.round(weeksUntilEndOfMonth.weeks)) / 100)} \n` +
+                ` ├─ Por dia: ${currencyFormatter.format((meta.planejado - meta.gasto) / (Math.round(daysUntilEndOfMonth.days)) / 100)} \n\n`
+            ;
         }
 
         try {
