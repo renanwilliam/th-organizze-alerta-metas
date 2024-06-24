@@ -5,8 +5,9 @@ import createClient from '@botocrat/telegram'
 import {NoDeltaBatchIntegrationFlow} from "@tunnelhub/sdk/src/classes/flows/noDeltaBatchIntegrationFlow";
 import Organizze from "./organizze";
 import {DateTime} from "luxon";
+import {OpenAI} from 'openai';
 
-export default class Integration extends NoDeltaBatchIntegrationFlow {
+export default class Integration extends NoDeltaBatchIntegrationFlow<IntegrationModel> {
     private readonly TELEGRAM_TOKEN: string;
     private readonly TELEGRAM_CHAT_ID: string;
     private readonly parameters: { custom: GenericParameter[] };
@@ -59,7 +60,7 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
         ];
     }
 
-    async loadSourceSystemData(payload?: any): Promise<IntegrationModel[]> {
+    async loadSourceSystemData(): Promise<IntegrationModel[]> {
         const categories = await this.organizze.getCategories();
         const budgets = await this.organizze.getBudgets();
 
@@ -83,6 +84,10 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
     }
 
     async sendDataInBatch(metas: IntegrationModel[]): Promise<IntegrationMessageReturnBatch[]> {
+        const openai = new OpenAI({
+            apiKey: this.getRequiredParameter(this.parameters, 'API_KEY_OPENAI')
+        });
+
         const client = createClient({token: this.TELEGRAM_TOKEN})
         let currencyFormatter = new Intl.NumberFormat('pt-BR', {
             style: 'currency',
@@ -111,10 +116,27 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
             ;
         }
 
+        const contexto = `
+    Você é um conselheiro financeiro. Dados meus dados abaixo de metas financeiras e realizações dentro desse mês, quero que você me forneça uma mensagem diária resumida dado meu progresso, com pontos de atenção e sugestões com contexto dentro da categoria. Por exemplo: se estiver muito gastos em restaurantes e saldo sobrando em mercado, faça a sugestão de comer mais em casa. Seja objetivo.
+    `;
+
+        const prompt = `
+    Contexto: ${contexto}
+    Gastos: 
+    ${message}
+    `;
+
         try {
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o",
+                messages: [{role: "user", content: prompt}],
+            });
+
+            const chatGptResponse = response.choices[0].message.content;
+
             await client.sendMessage({
                 chat_id: this.TELEGRAM_CHAT_ID,
-                text: message,
+                text: chatGptResponse,
                 // @ts-ignore
                 parse_mode: 'HTML'
             });
@@ -130,6 +152,18 @@ export default class Integration extends NoDeltaBatchIntegrationFlow {
                 message: e.message,
             }));
         }
+    }
+
+    private getRequiredParameter(parameters: { custom: GenericParameter[] }, parameterName: string): string {
+        const param = this.getParameter(parameters, parameterName);
+        if (!param) {
+            throw new Error(`O parâmetro ${parameterName} é obrigatório`);
+        }
+        return param;
+    }
+
+    private getParameter(parameters: { custom: GenericParameter[] }, parameterName: string): string | null {
+        return parameters?.custom?.find(param => param.name === parameterName)?.value;
     }
 
     private getIntegrationRequiredParameter(paramName: string): string {

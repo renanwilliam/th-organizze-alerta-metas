@@ -6,6 +6,6 @@ package:
 configuration:
   runtimeEngine: LAMBDA
   entrypoint: index.handler
-  runtime: nodejs18.x
+  runtime: nodejs20.x
   memorySize: 256
   timeout: 30
