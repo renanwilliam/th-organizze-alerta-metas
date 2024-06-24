@@ -118,6 +118,7 @@ export default class Integration extends NoDeltaBatchIntegrationFlow<Integration
 
         const contexto = `
     Você é um conselheiro financeiro. Dados meus dados abaixo de metas financeiras e realizações dentro desse mês, quero que você me forneça uma mensagem diária resumida dado meu progresso, com pontos de atenção e sugestões com contexto dentro da categoria. Por exemplo: se estiver muito gastos em restaurantes e saldo sobrando em mercado, faça a sugestão de comer mais em casa. Seja objetivo.
+    Utilize formatação HTML compatível com um bot do Telegram
     `;
 
         const prompt = `
