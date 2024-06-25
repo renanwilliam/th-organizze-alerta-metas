@@ -4289,6 +4289,11 @@ quick-lru@^5.1.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
 
+ramda@^0.26.1:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.26.1.tgz#8d41351eb8111c55353617fc3bbffad8e4d35d06"
+  integrity sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
+
 react-is@^18.0.0:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
@@ -4577,6 +4582,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
+telegraf-safe-md-reply@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/telegraf-safe-md-reply/-/telegraf-safe-md-reply-1.0.0.tgz#2e15c0223efc3a9880cc6bb6380185a4eae4e868"
+  integrity sha512-4o5fKEscxmjEjTbG40DAqZtJcisOH+jIntEF1lE0Sr/z3B2EyQzKgR5y7zPUB5tXUOIt9Fz2uPOlJc8mDJy5Fw==
+
 test-exclude@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/test-exclude/-/test-exclude-6.0.0.tgz#04a8698661d805ea6fa293b6cb9e63ac044ef15e"
@@ -4585,6 +4595,13 @@ test-exclude@^6.0.0:
     "@istanbuljs/schema" "^0.1.2"
     glob "^7.1.4"
     minimatch "^3.0.4"
+
+tg-md-sanitizer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/tg-md-sanitizer/-/tg-md-sanitizer-1.0.1.tgz#ee9d95246c9e220f6ebef065475a26b8ad134fed"
+  integrity sha512-oKiPOcRMgkneXBNy7x90PyU1B+FVJm0jCTA6QhTLt17h1JgfYc/Fa5cuRLumQHBz/NCjUN2DfgN6Ku8J4s6c/A==
+  dependencies:
+    ramda "^0.26.1"
 
 tmpl@1.0.5:
   version "1.0.5"

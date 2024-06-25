@@ -5,7 +5,7 @@ import * as thSdk from '@tunnelhub/sdk';
 jest.mock('../src/classes/integration');
 jest.mock('@tunnelhub/sdk');
 
-const mockedSdk = jest.mocked(thSdk, true);
+const mockedSdk = jest.mocked(thSdk);
 
 describe('index text', () => {
     mockedSdk.AutomationExecution.executeAutomation.mockImplementation(jest.fn());

@@ -38,6 +38,8 @@
     "@tunnelhub/sdk": "^1.4.1",
     "axios": "^1.5.0",
     "luxon": "^3.4.3",
-    "openai": "^4.52.0"
+    "openai": "^4.52.0",
+    "telegraf-safe-md-reply": "^1.0.0",
+    "tg-md-sanitizer": "^1.0.1"
   }
 }

@@ -8,4 +8,4 @@ configuration:
   entrypoint: index.handler
   runtime: nodejs20.x
   memorySize: 256
-  timeout: 30
+  timeout: 60

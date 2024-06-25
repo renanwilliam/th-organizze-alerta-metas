@@ -3,10 +3,12 @@ import {AutomationExecution} from '@tunnelhub/sdk';
 import AutomationLog from '@tunnelhub/sdk/src/classes/logs/automationLog';
 import {NoDeltaIntegrationFlow} from '@tunnelhub/sdk/src/classes/flows/noDeltaIntegrationFlow';
 import * as dotenv from 'dotenv';
+import type {BatchWriteCommandOutput} from '@aws-sdk/lib-dynamodb';
 
 
 describe('test src/integration', () => {
     dotenv.config();
+    jest.setTimeout(99999999);
 
     beforeAll(() => {
         /**
@@ -21,6 +23,8 @@ describe('test src/integration', () => {
         persistLogsFunc.mockImplementation(() => {
         });
 
+        const persistLogsFuncBatch = jest.spyOn(AutomationLog, 'saveInDynamoDB');
+        persistLogsFuncBatch.mockResolvedValue({} as BatchWriteCommandOutput);
 
         const updateExecutionStatisticsFunc = jest.spyOn(NoDeltaIntegrationFlow.prototype as any, 'updateExecutionStatistics');
         updateExecutionStatisticsFunc.mockImplementation(() => {
@@ -42,6 +46,10 @@ describe('test src/integration', () => {
                     {
                         "name": "TELEGRAM_CHAT_ID",
                         "value": process.env.TELEGRAM_CHAT_ID
+                    },
+                    {
+                        "name": "API_KEY_OPENAI",
+                        "value": process.env.API_KEY_OPENAI
                     }
                 ]
             },

@@ -118,7 +118,7 @@ export default class Integration extends NoDeltaBatchIntegrationFlow<Integration
 
         const contexto = `
     Você é um conselheiro financeiro. Dados meus dados abaixo de metas financeiras e realizações dentro desse mês, quero que você me forneça uma mensagem diária resumida dado meu progresso, com pontos de atenção e sugestões com contexto dentro da categoria. Por exemplo: se estiver muito gastos em restaurantes e saldo sobrando em mercado, faça a sugestão de comer mais em casa. Seja objetivo.
-    Utilize formatação HTML compatível com um bot do Telegram
+    O uso de formatação não é necessário mas o uso de emojis é permitido 
     `;
 
         const prompt = `
@@ -135,11 +135,13 @@ export default class Integration extends NoDeltaBatchIntegrationFlow<Integration
 
             const chatGptResponse = response.choices[0].message.content;
 
+            const sanitizedResponse = this.escapeMarkdown(chatGptResponse);
+
             await client.sendMessage({
                 chat_id: this.TELEGRAM_CHAT_ID,
-                text: chatGptResponse,
+                text: sanitizedResponse,
                 // @ts-ignore
-                parse_mode: 'HTML'
+                parse_mode: 'MarkdownV2'
             });
             return metas.map(() => ({
                 status: 'SUCCESS',
@@ -147,12 +149,22 @@ export default class Integration extends NoDeltaBatchIntegrationFlow<Integration
                 message: 'Meta enviada',
             }));
         } catch (e) {
+            console.log(e);
             return metas.map(() => ({
                 status: 'FAIL',
                 data: {},
                 message: e.message,
             }));
         }
+    }
+
+    private escapeMarkdown(text: string) {
+        const SPECIAL_CHARS = [
+            '\\', '_', /*'*',*/ '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'
+        ]
+
+        const regex = new RegExp(`[${SPECIAL_CHARS.join('\\')}]`, 'ig')
+        return text.replace(regex, '\\$&')
     }
 
     private getRequiredParameter(parameters: { custom: GenericParameter[] }, parameterName: string): string {

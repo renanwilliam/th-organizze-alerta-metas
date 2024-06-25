@@ -11,3 +11,4 @@ node_modules
 !/coverage/badge.svg
 
 .env
+/yarn-error.log
