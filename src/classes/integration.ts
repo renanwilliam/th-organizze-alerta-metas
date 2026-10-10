@@ -1,8 +1,8 @@
 import {GenericParameter, IntegrationMessageReturnBatch, Metadata} from '@tunnelhub/sdk';
-import {TunnelHubSystem} from '@tunnelhub/sdk/src/types/data';
+import {TunnelHubSystem} from '@tunnelhub/sdk';
 import {IntegrationModel} from '../data';
 import createClient from '@botocrat/telegram'
-import {NoDeltaBatchIntegrationFlow} from "@tunnelhub/sdk/src/classes/flows/noDeltaBatchIntegrationFlow";
+import {NoDeltaBatchIntegrationFlow} from "@tunnelhub/sdk";
 import Organizze from "./organizze";
 import {DateTime} from "luxon";
 import {OpenAI} from 'openai';
@@ -10,8 +10,8 @@ import {OpenAI} from 'openai';
 export default class Integration extends NoDeltaBatchIntegrationFlow<IntegrationModel> {
     private readonly TELEGRAM_TOKEN: string;
     private readonly TELEGRAM_CHAT_ID: string;
-    private readonly parameters: { custom: GenericParameter[] };
-    private readonly systems: TunnelHubSystem[];
+    declare protected readonly parameters: { custom: GenericParameter[] };
+    declare protected systems: TunnelHubSystem[];
     private readonly organizze: Organizze;
 
     constructor(event: any, context: any) {
