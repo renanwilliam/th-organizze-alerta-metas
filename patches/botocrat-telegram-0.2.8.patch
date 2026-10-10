@@ -1,0 +1,9 @@
+diff --git a/types/objects/file.d.ts b/types/objects/file.d.ts
+--- a/types/objects/file.d.ts
++++ b/types/objects/file.d.ts
+@@ -1,4 +1,4 @@
+-import { Buffer } from '@types/node'
++import type { Buffer } from 'node:buffer'
+ import { ReadStream } from 'fs'
+ type TInputFile = ReadStream
+ export type TTAttachment = TInputFile | string

@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2024",
     "esModuleInterop": true,
-    "moduleResolution": "Node",
-    "emitDeclarationOnly": true,
-    "declaration": true
+    "moduleResolution": "Bundler",
+    "module": "Preserve",
+    "noEmit": true
   },
   "include": [
     "src/**/*"

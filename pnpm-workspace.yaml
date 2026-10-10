@@ -1,0 +1,8 @@
+allowBuilds:
+  esbuild: true
+  pre-commit: false
+  '@swc/core': false
+  aws-sdk: false
+  spawn-sync: false
+patchedDependencies:
+  '@botocrat/telegram@0.2.8': patches/botocrat-telegram-0.2.8.patch
